@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>Admin Dashboard</title>
+</head>
+
+<body>
+    <h3>Welcome Admin</h3>
+    <div class = "navigation_bar">
+        <nav style="text-align: center;">
+            <a href="{{ url_for('summary') }}">Summary</a> |
+            <a href="{{ url_for('logout_admin') }}">Logout</a> 
+        </nav>
+    </div>
+    <h4>Search Professional</h4>
+    <form action="{{ url_for('admin_dashboard') }}" method="GET" class="mb-4">
+        <div class="row">
+            <div class="col-md-5">
+                <input type="text" name="name" class="form-control" placeholder="Search by name" value="{{ request.args.get('name', '') }}">
+            </div>
+            <div class="col-md-5">
+                <input type="text" name="service_id" class="form-control" placeholder="Search by ID" value="{{ request.args.get('professional_id', '') }}">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </div>
+    </form>
+    {% if result %}
+    <h5>Matching Results</h5>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th> 
+                <th>Name</th>
+                <th>Contact</th>
+                <th>Experience</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>Block Status</th>
+                <th>Approval Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for professional in result %} 
+            <tr>
+            <td>{{professional.id}}</td>
+            <td>{{professional.name}}</td>
+            <td>{{professional.contact}}</td>
+            <td>{{professional.experience}}</td>
+            <td>{{professional.email}}</td>
+            <td>{{professional.address}}</td>
+            <td>{{professional.is_block}}</td>
+            <td>{{professional.is_approved}}</td>
+            <td>
+                {% if professional.is_approved %}
+                <form action="{{ url_for('block_professional') }}" method="post" style="display:inline;">
+                    <input type="hidden" name = "id" value="{{ professional.id }}">
+                    <button type="submit">Block</button>
+                </form>
+                <form action="{{ url_for('unblock_professional') }}" method="post" style="display:inline;">
+                    <input type="hidden" name = "id" value="{{ professional.id }}">
+                    <button type="submit">Unblock</button>
+                </form>
+                {% else %}
+                <form action="{{ url_for('approve_professional') }}" method="post" style="display:inline;">
+                    <input type="hidden" name = "id" value="{{ professional.id }}">
+                    <button type="submit">Approve</button>
+                </form>
+                <form action="{{ url_for('decline_professional') }}" method="post" style="display:inline;">
+                    <input type="hidden" name = "id" value="{{ professional.id }}">
+                    <button type="submit">Decline</button>
+                </form>
+                {% endif %}
+            </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+     
+
+    <div class = "Services">
+        <h3>Services</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th> 
+                    <th>Service Name</th>
+                    <th>Date Created</th>
+                    <th>Time Required</th>
+                    <th>Base price</th>
+                    <th>Delete</th>
+                    <th>Edit</th>
+                </tr>
+            </thead>
+            {% for service in services %}
+            <tr>
+                <td>{{service.service_id}}</td>
+                <td>{{service.name}}</td>
+                <td>{{service.date_created}}</td>
+                <td>{{service.time_required}}</td>
+                <td>{{service.base_price}}</td>
+                <td>
+                    <form action="{{ url_for('delete_service', service_id = service.service_id)  }}" method="post" style="display:inline;">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+                <td>
+                    <form action="{{ url_for('edit_service', service_id = service.service_id)  }}" method="post" style="display:inline;">
+                    <button type="submit">Edit</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            
+        </table>
+        <a href="{{ url_for('create_service') }}">+New Services</a>
+    </div>
+    <br>
+    <div class = "Professionals">
+        <h3>Approved Professionals</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th> 
+                    <th>Name</th>
+                    <th>Contact</th>
+                    <th>Experience</th>
+                    <th>Email</th>
+                    <th>Address</th>
+                    <th>Block Status</th>
+                    <th>Approval Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for professional in approved_professionals %} 
+                <tr>
+                <td>{{professional.id}}</td>
+                <td>{{professional.name}}</td>
+                <td>{{professional.contact}}</td>
+                <td>{{professional.experience}}</td>
+                <td>{{professional.email}}</td>
+                <td>{{professional.address}}</td>
+                <td>{{professional.is_block}}</td>
+                <td>{{professional.is_approved}}</td>
+                <td>
+                    <form action="{{ url_for('block_professional') }}" method="post" style="display:inline;">
+                        <input type="hidden" name = "id" value="{{ professional.id }}">
+                        <button type="submit">Block</button>
+                    </form>
+                    <form action="{{ url_for('unblock_professional') }}" method="post" style="display:inline;">
+                        <input type="hidden" name = "id" value="{{ professional.id }}">
+                        <button type="submit">Unblock</button>
+                    </form>
+                </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h3>Pending Professionals</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th> 
+                    <th>Name</th>
+                    <th>Contact</th>
+                    <th>Experience</th>
+                    <th>Email</th>
+                    <th>Address</th>
+                    <th>Block Status</th>
+                    <th>Approval Status</th>
+                    <th>Action</th>
+                
+                </tr>
+            </thead>
+            <tbody>
+                {% for professional in pending_professionals %} 
+                <tr>
+                <td>{{professional.id}}</td>
+                <td>{{professional.name}}</td>
+                <td>{{professional.contact}}</td>
+                <td>{{professional.experience}}</td>
+                <td>{{professional.email}}</td>
+                <td>{{professional.address}}</td>
+                <td>{{professional.is_block}}</td>
+                <td>{{professional.is_approved}}</td>
+                <td>
+                    <form action="{{ url_for('approve_professional') }}" method="post" style="display:inline;">
+                        <input type="hidden" name = "id" value="{{ professional.id }}">
+                        <button type="submit">Approve</button>
+                    </form>
+                    <form action="{{ url_for('decline_professional') }}" method="post" style="display:inline;">
+                        <input type="hidden" name = "id" value="{{ professional.id }}">
+                        <button type="submit">Decline</button>
+                    </form>
+                </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <br>
+    <div>
+        <h3>Users</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>is_block</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{user.id}}</td>
+                    <td>{{user.name}}</td>
+                    <td>{{user.email}}</td>
+                    <td>{{user.is_block}}</td>
+                    <td>
+                        <form action="{{ url_for('block_user') }}" method="post" style="display:inline;">
+                            <input type="hidden" name = "id" value="{{ user.id }}">
+                            <button type="submit">Block</button>
+                        </form>
+                        <form action="{{ url_for('unblock_user') }}" method="post" style="display:inline;">
+                            <input type="hidden" name = "id" value="{{ user.id }}">
+                            <button type="submit">Unblock</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <br>
+</body>
+</html>

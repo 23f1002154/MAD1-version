@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Service</title>
+</head>
+<body>
+    <h1>Edit Service</h1>
+
+    <form action="{{ url_for('edit_service', service_id=service_id) }}" method="POST">
+        <label for="new_name">New Name:</label>
+        <input type="text" id="new_name" name="new_name" value="{{ current_name }}" required>
+
+        <label for="new_date_created">new_Date Created:</label>
+        <input type="text" id="new_date_created" name="new_date_created" required>
+
+        <label for="new_description">new_Description</label>
+        <input type="text" id="new_description" name="new_description" required>
+
+        <label for="new_time_required">Minimum Time Required</label>
+        <input type="text" id="new_time_required" name = "new_time_required" required>
+
+        <label for="new_base_price">Base_price:</label>
+        <input type="text" id="new_base_price" name="new_base_price" required>
+
+        <button type="submit">Save Changes</button>
+    </form>
+
+    <a href="{{ url_for('admin_dashboard') }}">Back to Dashboard</a>
+</body>
+</html>

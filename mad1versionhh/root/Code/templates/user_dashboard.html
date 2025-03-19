@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard</title>
+</head>
+
+<body>
+    <h3>Welcome Customer</h3>
+    <div class = "navigation_bar">
+        <nav class = "navigation" style="text-align: center;">
+            <div >
+                <a href="{{ url_for('logout') }}">Logout</a> 
+            </div>
+        </nav>
+    </div>
+
+    <form action="{{ url_for('customer_dashboard') }}" method="GET" class="mb-4">
+        <div class="row">
+            <div class="col-md-5">
+                <input type="text" name="name" class="form-control" placeholder="Search by name" value="{{ request.args.get('name', '') }}">
+            </div>
+            <div class="col-md-5">
+                <input type="text" name="service_id" class="form-control" placeholder="Search by ID" value="{{ request.args.get('servic_id', '') }}">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </div>
+    </form>
+    {% if result %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th> 
+                <th>Service Name</th>
+                <th>Time Required</th>
+                <th>Description</th>
+                <th>Base price</th>
+            </tr>
+        </thead>
+        {% for service in result %}
+        <tr>
+            <td>{{service.service_id}}</td>
+            <td>{{service.name}}</td>
+            <td>{{service.time_required}}</td>
+            <td>{{service.description}}</td>
+            <td>{{service.base_price}}</td>
+        </tr>
+        {% endfor %}    
+    </table>
+    {% endif %}
+     
+    
+    <br><br><br>
+    <div class = "available_services">
+        <h2>Available Services</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th> 
+                    <th>Service Name</th>
+                    <th>Time Required</th>
+                    <th>Description</th>
+                    <th>Base price</th>
+                </tr>
+            </thead>
+            {% for service in services %}
+            <tr>
+                <td>{{service.service_id}}</td>
+                <td>{{service.name}}</td>
+                <td>{{service.time_required}}</td>
+                <td>{{service.description}}</td>
+                <td>{{service.base_price}}</td>
+            </tr>
+            {% endfor %}  
+        </table>
+    </div>
+    
+    <div class = "Service_request">
+        <h3>Service History</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th> 
+                    <th>Service ID</th>
+                    <th>Professional Name</th>
+                    <th>Date of service</th>
+                    <th>Status</th>
+                    <th>Edit</th>
+                    <th>Close</th>
+                </tr>
+            </thead>
+            {% for request in service_requests %}
+            <tr>
+                <td>{{request.id}}</td>
+                <td>{{request.request_for_service_id}}</td>
+                <td>{{request.professional.name}}</td>
+                <td>{{request.date_of_service}}</td>
+                <td>{{request.status}}</td>
+                <td><a href="{{ url_for('edit_service_request', request_id=request.id) }}" class="button">Edit</a></td>
+                <td>
+                    <form action="{{ url_for('close_request_user') }}" method="post" style="display:inline;">
+                        <input type="hidden" name = "id" value="{{ request.id }}">
+                        <button type="submit">Close</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <a href="{{ url_for('create_service_request') }}">+New Request</a>
+    </div>          
+</body>
+</html>

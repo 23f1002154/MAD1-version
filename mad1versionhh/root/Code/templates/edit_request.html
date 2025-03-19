@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Service Request</title>
+</head>
+<body>
+    <h1>Edit Request</h1>
+
+    <form action="{{ url_for('edit_service_request', request_id=request_id) }}" method="POST">
+        
+        <label for="service">Select Service:</label>
+        <select name="service" id="service">
+            {% for service in services %}
+            <option value="{{service.service_id}}">{{service.name}}</option>
+            {% endfor %}
+        </select>
+
+        <label for="date_of_service">Date of Service</label>
+        <input type="text" id="date_of_service" name="date_of_service" required>
+
+        <label for="description">Description</label>
+        <input type="text" id="description" name="description" required>
+
+        <label for="offered_price">Offered Price(negotiable)</label>
+        <input type="text" id="offered_price" name="offered_price" required>
+
+        <button type="submit">Edit Request</button>
+    </form>
+
+</body>
+</html>

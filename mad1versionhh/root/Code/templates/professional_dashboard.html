@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Dashboard</title>
+</head>
+
+<body>
+    <h3>Welcome Professional</h3>
+    <div class = "navigation_bar">
+        <nav class = "navigation" style="text-align: center;">
+            <div >
+                <a href="{{ url_for('logout') }}">Logout</a> 
+            </div>
+        </nav>
+    </div>
+    <br><br><br>
+    <div class = "Service Requests">
+        <h3>Service Requests</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Customer</th>
+                    <th>Date Of Service</th>
+                    <th>Description</th>
+                    <th>Offered Price</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for request in service_requests %}
+                <tr>
+                <td>{{request.id}}</td>
+                <td>{{request.user.name}}</td>
+                <td>{{request.date_of_service}}</td>
+                <td>{{request.description}}</td>
+                <td>{{request.offered_Price}}</td>
+                <td>N/A</td>
+                <td>
+                    <form action="{{ url_for('accept') }}" method="post" style="display:inline;">
+                         <input type="hidden" name = "id" value="{{ request.id }}">
+                        <button type="submit">Accept</button>
+                    </form>
+                    <form action="{{ url_for('reject') }}" method="post" style="display:inline;">
+                        <input type="hidden" name = "id" value="{{ request.id }}">
+                        <button type="submit">Reject</button>
+                    </form>
+                </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <h3>Accepted Service Requests</h3>
+    {% if accepted_service_requests %}
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Customer</th>
+                    <th>Date Of Service</th>
+                    <th>Description</th>
+                    <th>Offered Price</th>
+                    <th>Status</th>
+                    <th>Close Request</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for request in accepted_service_requests %}
+                <tr>
+                <td>{{request.id}}</td>
+                <td>{{request.user.name}}</td>
+                <td>{{request.date_of_service}}</td>
+                <td>{{request.description}}</td>
+                <td>{{request.offered_Price}}</td>
+                <td>{{request.status}}</td>
+                <td>
+                    <form action="{{ url_for('close_request') }}" method="post" style="display:inline;">
+                        <input type="hidden" name = "id" value="{{ request.id }}">
+                        <button type="submit">Mark As Complete</button>
+                    </form>
+                </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}        
+</body>
+</html>
